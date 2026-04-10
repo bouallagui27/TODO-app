@@ -1,16 +1,80 @@
-# React + Vite
+# 🚀 Cine Vault - Professional Task Manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A premium, high-performance Todo application built with **React** and **Tailwind CSS**. This project was designed with a focus on **Separation of Concerns (SoC)** and a "Lux" (Luxury) UI/UX experience.
 
-Currently, two official plugins are available:
+## 📋 Table of Contents
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Architecture (SoC)](#architecture-soc)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Folder Structure](#folder-structure)
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🌟 Overview
 
-## Expanding the ESLint configuration
+**Cine Vault** is more than just a list; it's a task management tool that uses modern React patterns to ensure scalability. By separating the business logic into **Custom Hooks** and managing global state via **Context API**, the code remains clean, maintainable, and ready for future backend integration.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## ✨ Key Features
+
+- **Luxury Design:** Modern glassmorphism UI with custom gradients and smooth transitions.
+- **Category System:** Tag tasks as _Work_, _Personal_, or _Other_ with dynamic color coding.
+- **Smart Progress Bar:** Real-time visual tracking of completed tasks percentage.
+- **Global Sync:** Uses Context API to keep the header statistics in sync with the task list.
+- **Fully Responsive:** Optimized for both Desktop and Mobile devices.
+
+## 🏗️ Architecture (SoC)
+
+The project is built using the **Separation of Concerns** principle:
+
+1. **Logic Layer:** All state management and functions (`addTask`, `toggleTask`, `deleteTask`) are extracted into a Custom Hook (`useTodos.jsx`).
+2. **Presentation Layer:** Components like `Maintodolist.jsx` and `Header.jsx` handle only the UI and Tailwind styling.
+3. **Global State:** `CountContext.jsx` manages cross-component data sharing.
+
+## 🛠️ Tech Stack
+
+- **Framework:** [React.js](https://reactjs.org/) (Vite)
+- **Styling:** [Tailwind CSS v3](https://tailwindcss.com/)
+- **State Management:** Context API & Custom Hooks
+- **Icons:** SVG-based modern icons
+
+## 📦 Getting Started
+
+### 1. Clone the repository
+
+```bash
+git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
+2. Install Dependencies
+Bash
+npm install
+3. Run Development Server
+Bash
+npm run dev
+📂 Folder Structure
+Plaintext
+src/
+├── components/      # UI Components (Header, List, etc.)
+├── hooks/           # Custom Hooks (Business Logic)
+├── assets/          # Images and static files
+├── App.jsx          # Main Entry & Context Provider
+└── index.css        # Tailwind directives
+👤 Author
+Oussema
+
+Frontend Developer
+
+Current Track: Science and Industry Technologies (STI)
+
+This project is part of my journey to becoming a Full-Stack Developer.
+
+
+### How to use it:
+1.  Go to your project folder.
+2.  Create a file named `README.md`.
+3.  Paste the code above and save it.
+4.  When you push to **GitHub**, this will automatically become your "Home Page" for the project.
+
+**Do you want me to explain how to add a real screenshot of your app to this file
+```
