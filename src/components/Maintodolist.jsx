@@ -1,6 +1,5 @@
-import React, { useRef, useState, useContext } from "react";
 import { CountContext } from "./contextcount";
-
+import { useTodos } from "../hooks/usetodo";
 const CATEGORIES = [
   { name: "work",     activeClass: "bg-violet-500/20 text-violet-300 border-violet-500/40" },
   { name: "personal", activeClass: "bg-rose-500/20 text-rose-300 border-rose-500/40" },
@@ -13,41 +12,18 @@ const TAG_STYLES = {
   other:    "bg-sky-500/10 text-sky-400",
 };
 
-const TodoList = () => {
-  const inputRef = useRef(null);
-  const [todos, setTodos] = useState([]);
-  const [category, setCategory] = useState("work");
-  const { setCount, setDone } = useContext(CountContext);
-
-  const syncContext = (updated) => {
-    setCount(updated.length);
-    setDone(updated.filter((t) => t.done).length);
-  };
-
-  const addTask = () => {
-    const value = inputRef.current.value.trim();
-    if (!value) return;
-    const updated = [...todos, { id: Date.now(), text: value, done: false, category }];
-    setTodos(updated);
-    syncContext(updated);
-    inputRef.current.value = "";
-  };
-
-  const toggleTask = (id) => {
-    const updated = todos.map((t) => (t.id === id ? { ...t, done: !t.done } : t));
-    setTodos(updated);
-    syncContext(updated);
-  };
-
-  const deleteTask = (id) => {
-    const updated = todos.filter((t) => t.id !== id);
-    setTodos(updated);
-    syncContext(updated);
-  };
-
+const Maintodolist = () => {
+  const { 
+    todos, 
+    category, 
+    setCategory, 
+    inputRef, 
+    addTask, 
+    toggleTask, 
+    deleteTask 
+  } = useTodos();
   return (
     <div className="flex flex-col gap-4">
-      {/* Input */}
       <div className="flex gap-2 bg-white/5 border border-white/10 rounded-2xl p-2">
         <input
           ref={inputRef}
@@ -81,7 +57,6 @@ const TodoList = () => {
         ))}
       </div>
 
-      {/* List */}
       <div className="flex flex-col gap-2">
         {todos.length === 0 ? (
           <div className="text-center py-16 flex flex-col items-center gap-3">
@@ -115,7 +90,6 @@ const TodoList = () => {
                 )}
               </button>
 
-              {/* Text */}
               <span
                 className={`flex-1 text-sm leading-snug transition-all ${
                   todo.done ? "line-through text-white/25" : "text-white/80"
@@ -153,4 +127,4 @@ const TodoList = () => {
   );
 };
 
-export default TodoList;
+export default Maintodolist;
