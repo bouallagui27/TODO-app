@@ -6,7 +6,6 @@ export const useTodos = () => {
   const [category, setCategory] = useState("work");
   const { setCount, setDone } = useContext(CountContext);
 
-  // Function داخلية لتحديث الـ Header
   const syncContext = (updated) => {
     setCount(updated.length);
     setDone(updated.filter((t) => t.done).length);
@@ -33,7 +32,6 @@ export const useTodos = () => {
     syncContext(updated);
   };
 
-  // نخرجوا الـ State والـ Functions اللي حشتنا بيهم في الـ UI
   return {
     todos,
     category,
