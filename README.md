@@ -69,12 +69,3 @@ Current Track: Science and Industry Technologies (STI)
 
 This project is part of my journey to becoming a Full-Stack Developer.
 
-
-### How to use it:
-1.  Go to your project folder.
-2.  Create a file named `README.md`.
-3.  Paste the code above and save it.
-4.  When you push to **GitHub**, this will automatically become your "Home Page" for the project.
-
-**Do you want me to explain how to add a real screenshot of your app to this file
-```
