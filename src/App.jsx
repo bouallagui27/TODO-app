@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Heaader from "./components/heaader";
+import Header from "./components/heaader";
 import Maintodolist from "./components/Maintodolist";
 import { CountContext } from "./components/contextcount";
 
@@ -9,8 +9,12 @@ function App() {
 
   return (
     <CountContext.Provider value={{ done, setDone, count, setCount }}>
-      <Heaader />
-      <Maintodolist />
+      <div className="min-h-screen bg-[#0f0e17] px-4 py-10">
+        <div className="max-w-xl mx-auto flex flex-col gap-6">
+          <Header />
+          <Maintodolist />
+        </div>
+      </div>
     </CountContext.Provider>
   );
 }

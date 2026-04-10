@@ -1,71 +1,79 @@
-import { useContext, useRef, useState } from 'react'
-import { CountContext } from './contextcount'
+import React, { useRef, useState, useContext } from "react";
+import { CountContext } from "./contextcount";
 
-const Maintodolist = () => {
+const CATEGORIES = [
+  { name: "work",     activeClass: "bg-violet-500/20 text-violet-300 border-violet-500/40" },
+  { name: "personal", activeClass: "bg-rose-500/20 text-rose-300 border-rose-500/40" },
+  { name: "other",    activeClass: "bg-sky-500/20 text-sky-300 border-sky-500/40" },
+];
+
+const TAG_STYLES = {
+  work:     "bg-violet-500/10 text-violet-400",
+  personal: "bg-rose-500/10 text-rose-400",
+  other:    "bg-sky-500/10 text-sky-400",
+};
+
+const TodoList = () => {
   const inputRef = useRef(null);
   const [todos, setTodos] = useState([]);
-  const { setCount } = useContext(CountContext);
   const [category, setCategory] = useState("work");
+  const { setCount, setDone } = useContext(CountContext);
 
-  function addTask() {
-    const value = inputRef.current.value;
-    if (!value.trim()) return;
+  const syncContext = (updated) => {
+    setCount(updated.length);
+    setDone(updated.filter((t) => t.done).length);
+  };
 
-    setTodos(prev => [...prev, {
-      id: Date.now(),
-      text: value.trim(),
-      done: false,
-      category: category
-    }]);
-
-    inputRef.current.value = "";
-  }
-
-  function toggleTask(id) {
-    const updated = todos.map(todo =>
-      todo.id === id ? { ...todo, done: !todo.done } : todo
-    );
+  const addTask = () => {
+    const value = inputRef.current.value.trim();
+    if (!value) return;
+    const updated = [...todos, { id: Date.now(), text: value, done: false, category }];
     setTodos(updated);
-    setCount(updated.filter(todo => todo.done).length);
-  }
+    syncContext(updated);
+    inputRef.current.value = "";
+  };
 
-  const categories = [
-    { name: 'work', active: 'bg-violet-500 text-white', inactive: 'bg-slate-200 text-slate-600' },
-    { name: 'personal', active: 'bg-red-400 text-white', inactive: 'bg-slate-200 text-slate-600' },
-    { name: 'other', active: 'bg-blue-400 text-white', inactive: 'bg-slate-200 text-slate-600' },
-  ];
-   function deleteTask(id) {
-    const filtered = todos.filter(todo => todo.id !== id);
-    setTodos(filtered);
-    setCount(filtered.filter(todo => todo.done).length);
-  }
+  const toggleTask = (id) => {
+    const updated = todos.map((t) => (t.id === id ? { ...t, done: !t.done } : t));
+    setTodos(updated);
+    syncContext(updated);
+  };
+
+  const deleteTask = (id) => {
+    const updated = todos.filter((t) => t.id !== id);
+    setTodos(updated);
+    syncContext(updated);
+  };
+
   return (
-    <div className='max-w-2xl mx-auto p-6 bg-white rounded-3xl shadow-2xl border border-gray-100'>
-      <div className='relative group'>
+    <div className="flex flex-col gap-4">
+      {/* Input */}
+      <div className="flex gap-2 bg-white/5 border border-white/10 rounded-2xl p-2">
         <input
           ref={inputRef}
           type="text"
-          placeholder="What's your next move?"
-          onKeyDown={(e) => e.key === 'Enter' && addTask()}
-          className='w-full border-2 border-gray-100 rounded-2xl py-4 pl-6 pr-16 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:border-violet-400 transition-all shadow-sm'
+          placeholder="What needs to be done?"
+          onKeyDown={(e) => e.key === "Enter" && addTask()}
+          className="flex-1 bg-transparent text-white placeholder:text-white/20 text-sm px-3 outline-none"
         />
-        <button 
-          onClick={addTask} 
-          className='absolute right-2 top-2 bottom-2 px-6 bg-violet-600 hover:bg-violet-700 text-white rounded-xl font-bold transition-all active:scale-95 shadow-lg shadow-violet-200'
+        <button
+          onClick={addTask}
+          className="bg-violet-500 hover:bg-violet-400 active:scale-95 transition-all text-white text-sm font-medium rounded-xl px-5 py-2.5 shadow-lg shadow-violet-500/25"
         >
           Add
         </button>
       </div>
 
-      <div className='flex gap-3 mt-6 justify-center'>
-        {categories.map(cat => (
+      {/* Categories */}
+      <div className="flex gap-2">
+        {CATEGORIES.map((cat) => (
           <button
             key={cat.name}
             onClick={() => setCategory(cat.name)}
-            className={`rounded-full px-5 py-2 text-xs font-bold tracking-tight uppercase transition-all duration-300 ${
-              category === cat.name 
-              ? `${cat.active} shadow-md scale-105` 
-              : `${cat.inactive} hover:bg-gray-300`
+            className={`text-xs font-medium px-4 py-1.5 rounded-full border transition-all duration-200 capitalize ${
+              category === cat.name
+                ? cat.activeClass
+                : "border-white/10 text-white/30 hover:text-white/50"
             }`}
           >
             {cat.name}
@@ -73,50 +81,76 @@ const Maintodolist = () => {
         ))}
       </div>
 
-      {/* Todo Items */}
-      <ul className='mt-10 space-y-3'>
-        {todos.map((todo) => (
-          <li key={todo.id} className='group flex items-center gap-4 p-4 bg-gray-50 rounded-2xl border border-transparent hover:border-violet-100 hover:bg-white hover:shadow-md transition-all duration-300'>
-            <div className="relative flex items-center">
-              <input
-                type="checkbox"
-                checked={todo.done}
-                onChange={() => toggleTask(todo.id)}
-                className='w-6 h-6 accent-violet-600 cursor-pointer rounded-lg'
-              />
-            </div>
-            
-            <span className={`flex-grow font-medium transition-all ${
-              todo.done ? 'line-through text-gray-400 decoration-gray-400/50' : 'text-gray-700'
-            }`}>
-              {todo.text}
-            </span>
-
-            <span className={`text-[10px] font-bold px-2 py-1 rounded-md opacity-70 ${
-              todo.category === 'work' ? 'bg-violet-100 text-violet-700' :
-              todo.category === 'personal' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'
-            }`}>
-              {todo.category}
-            </span>
-
-            <button
-              onClick={() => deleteTask(todo.id)}
-              className='opacity-0 group-hover:opacity-100 transition-all p-2 hover:bg-red-50 rounded-lg text-red-400 hover:text-red-600'
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+      {/* List */}
+      <div className="flex flex-col gap-2">
+        {todos.length === 0 ? (
+          <div className="text-center py-16 flex flex-col items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <rect x="4" y="4" width="12" height="12" rx="3" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5"/>
+                <path d="M7 10h6M10 7v6" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" strokeLinecap="round"/>
               </svg>
-            </button>
-          </li>
-        ))}
-      </ul>
-      
-      {todos.length === 0 && (
-        <div className="text-center py-10">
-          <p className="text-gray-400 italic">No tasks yet. Stay productive! 🚀</p>
-        </div>
+            </div>
+            <p className="text-white/20 text-sm">No tasks yet</p>
+          </div>
+        ) : (
+          todos.map((todo) => (
+            <div
+              key={todo.id}
+              className="group flex items-center gap-3 bg-white/5 hover:bg-white/[0.07] border border-white/10 rounded-xl px-4 py-3 transition-all duration-200"
+            >
+              {/* Checkbox */}
+              <button
+                onClick={() => toggleTask(todo.id)}
+                className={`w-5 h-5 rounded-md border flex-shrink-0 flex items-center justify-center transition-all ${
+                  todo.done
+                    ? "bg-violet-500 border-violet-500"
+                    : "border-white/20 hover:border-violet-400"
+                }`}
+              >
+                {todo.done && (
+                  <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                    <path d="M2 5.5l2.5 2.5 4.5-5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                )}
+              </button>
+
+              {/* Text */}
+              <span
+                className={`flex-1 text-sm leading-snug transition-all ${
+                  todo.done ? "line-through text-white/25" : "text-white/80"
+                }`}
+              >
+                {todo.text}
+              </span>
+
+              {/* Tag */}
+              <span className={`text-[10px] font-medium px-2 py-0.5 rounded-md capitalize ${TAG_STYLES[todo.category]}`}>
+                {todo.category}
+              </span>
+
+              {/* Delete */}
+              <button
+                onClick={() => deleteTask(todo.id)}
+                className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-lg hover:bg-rose-500/10 text-white/20 hover:text-rose-400"
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 3.5h10M5.5 3.5V2.5a1 1 0 011-1h1a1 1 0 011 1v1M6 6.5v4M8 6.5v4M3 3.5l.7 7a1 1 0 001 .9h4.6a1 1 0 001-.9l.7-7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Footer count */}
+      {todos.length > 0 && (
+        <p className="text-center text-white/20 text-xs">
+          {todos.filter((t) => !t.done).length} remaining
+        </p>
       )}
     </div>
-  )
-}
-export default Maintodolist
+  );
+};
+
+export default TodoList;
